@@ -93,10 +93,6 @@ while i < horizon:
 
 time = mab.get_time()
 
-mab.delta_for_epsilon_n_greedy()
-
-
-mab.epsilon_n_greedy(1000, 0.3)
 
 plt.figure(1)
 plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')
