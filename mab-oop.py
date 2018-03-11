@@ -6,6 +6,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 
+
 class Mab:
     def __init__(self, probability_vector, horizon):
         self.probability_vector = probability_vector
@@ -14,7 +15,7 @@ class Mab:
         self.win_value = [0 for i in range(self.n)]
         self.mean_win_value = [0 for i in range(self.n)]
         self.number_of_games = [1 for i in range(self.n)]
-        self.average_number_of_games = [1 for i in range(self.n)]
+        self.average_number_of_games = [0 for i in range(self.n)]
         self.current_index = 0
         self.total_number_of_games = self.n
         self.current_index_vector = []
@@ -32,8 +33,25 @@ class Mab:
         self.total_number_of_games += 1
         self.current_index_vector.append(self.current_index)
 
+    # стратегии
     def epsilon_greedy(self, epsilon):
         x = random.random()
+        if x < 1 - epsilon:
+            self.current_index = self.mean_win_value.index(max(self.mean_win_value))
+        else:
+            self.current_index = random.randint(0, self.n - 1)
+
+    def delta_for_epsilon_n_greedy(self):
+        index_of_max_probability_vector = self.get_index_of_max_of_probably_vector()
+        delta_array = [self.probability_vector[index_of_max_probability_vector] - self.probability_vector[i] for i in range(self.n)]
+        min_delta = min(i for i in delta_array if i > 0)
+        return min_delta
+
+    def epsilon_n_greedy(self, t, c):
+        x = random.random()
+        delta = self.delta_for_epsilon_n_greedy()
+        temp = c * self.n / (delta * delta * t)
+        epsilon = temp if temp < 1 else 1
         if x < 1 - epsilon:
             self.current_index = self.mean_win_value.index(max(self.mean_win_value))
         else:
@@ -64,23 +82,25 @@ class Mab:
         print('---------------------------------\n')
 
 
-count = 100
-mab = Mab([0.5, 0.2, 0.7], count)
+horizon = 10000
+mab = Mab([0.5, 0.2, 0.7], horizon)
 
 i = 0
-while i < count - mab.n:
+while i < horizon:
+    mab.epsilon_n_greedy(i + 1, 0.3)
     mab.play()
-    mab.epsilon_greedy(0.3)
     i += 1
 
 time = mab.get_time()
-print(time)
-print(mab.current_index_vector)
-print(mab.probability_vector)
+
+mab.delta_for_epsilon_n_greedy()
+
+
+mab.epsilon_n_greedy(1000, 0.3)
 
 plt.figure(1)
-plt.plot(time, mab.get_regret(), linestyle='--', label='mean = xxx')
-plt.title('The total expected regret (UCB1 Bernoulli)', fontsize=18)
+plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')
+plt.title('Regret', fontsize=18)
 plt.xlabel('time', fontsize=16)
 plt.ylabel('regret', fontsize=16)
 plt.legend(loc='upper left', prop={'size': 11})
