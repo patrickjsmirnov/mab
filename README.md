@@ -2,4 +2,4 @@
 https://en.wikipedia.org/wiki/Multi-armed_bandit
 
 # To do:
-- [] oop
+- [ ] oop
