@@ -34,6 +34,7 @@ class Mab:
         self.current_index_vector.append(self.current_index)
 
     # стратегии
+    # изменяют current_index
     def epsilon_greedy(self, epsilon):
         x = random.random()
         if x < 1 - epsilon:
@@ -56,6 +57,10 @@ class Mab:
             self.current_index = self.mean_win_value.index(max(self.mean_win_value))
         else:
             self.current_index = random.randint(0, self.n - 1)
+
+    def UCB1(self, t):
+        ucb1_array = [self.mean_win_value[i] + math.sqrt(2 * math.log(t) / self.number_of_games[i]) for i in range(self.n)]
+        self.current_index = ucb1_array.index(max(ucb1_array))
 
     def get_regret(self):
         regret_vector = []
@@ -82,12 +87,12 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 10000
+horizon = 20000
 mab = Mab([0.5, 0.2, 0.7], horizon)
 
 i = 0
 while i < horizon:
-    mab.epsilon_n_greedy(i + 1, 0.3)
+    mab.UCB1(i + 1)
     mab.play()
     i += 1
 
