@@ -3,9 +3,9 @@ https://en.wikipedia.org/wiki/Multi-armed_bandit
 
 # To do:
 - [x] OOP base
-- [ ] Epsilon-greedy
-- [ ] Epsilon_n-greedy
-- [ ] UCB1
+- [x] Epsilon-greedy
+- [x] Epsilon_n-greedy
+- [x] UCB1
 - [ ] Softmax
 - [ ] Pursuit
 - [ ] Reinforcement Comparison
