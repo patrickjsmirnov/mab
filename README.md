@@ -6,7 +6,7 @@ https://en.wikipedia.org/wiki/Multi-armed_bandit
 - [x] Epsilon-greedy
 - [x] Epsilon_n-greedy
 - [x] UCB1
-- [ ] Softmax
+- [x] Softmax
 - [ ] Pursuit
 - [ ] Reinforcement Comparison
 - [ ] Thompson Sampling
