@@ -62,6 +62,21 @@ class Mab:
         ucb1_array = [self.mean_win_value[i] + math.sqrt(2 * math.log(t) / self.number_of_games[i]) for i in range(self.n)]
         self.current_index = ucb1_array.index(max(ucb1_array))
 
+    def softmax(self, tau):
+        sum_denominator = sum([math.exp(self.mean_win_value[i] / tau) for i in range(self.n)])
+        softmax_probability_array = [math.exp(self.mean_win_value[i] / tau) / sum_denominator for i in range(self.n)]
+        x = random.random()
+        probability_sum = softmax_probability_array[0]
+        index = 0
+
+        while index < self.n:
+            if x < probability_sum:
+                self.current_index = index
+                break
+
+            index += 1
+            probability_sum += softmax_probability_array[index]
+
     def get_regret(self):
         regret_vector = []
         for i in range(self.horizon):
@@ -87,12 +102,12 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 20000
-mab = Mab([0.5, 0.2, 0.7], horizon)
+horizon = 10000
+mab = Mab([0.1, 0.3, 0.2], horizon)
 
 i = 0
 while i < horizon:
-    mab.UCB1(i + 1)
+    mab.softmax(0.01)
     mab.play()
     i += 1
 
