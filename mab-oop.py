@@ -13,6 +13,7 @@ class Mab:
         self.horizon = horizon
         self.n = len(self.probability_vector)
         self.win_value = [0 for i in range(self.n)]
+        self.win_value_in_time = [0 for i in range(horizon)]
         self.mean_win_value = [0 for i in range(self.n)]
         self.number_of_games = [1 for i in range(self.n)]
         self.average_number_of_games = [0 for i in range(self.n)]
@@ -20,6 +21,7 @@ class Mab:
         self.total_number_of_games = self.n
         self.current_index_vector = []
         self.pursuit_probability_array = []
+        self.conversion_array = []
 
     def get_max_of_probability_vector(self):
         return max(self.probability_vector)
@@ -31,7 +33,9 @@ class Mab:
         return self.mean_win_value.index(max(self.mean_win_value))
 
     def play(self):
-        self.win_value[self.current_index] += bernoulli.rvs(self.probability_vector[self.current_index])
+        win_value = bernoulli.rvs(self.probability_vector[self.current_index])
+        self.win_value[self.current_index] += win_value
+        self.win_value_in_time.append(win_value)
         self.number_of_games[self.current_index] += 1
         self.mean_win_value[self.current_index] = self.win_value[self.current_index] / self.number_of_games[self.current_index]
         self.total_number_of_games += 1
@@ -121,6 +125,14 @@ class Mab:
     def get_time(self):
         return [i for i in range(self.horizon)]
 
+    def conversion(self, t):
+        if t == 0:
+            self.conversion_array = [0 for i in range(self.horizon)]
+            return
+
+        self.conversion_array[t] = self.conversion_array[t - 1] * t / (t + 1) + 1 / t * self.win_value_in_time[t]
+
+
     def print_data(self):
         print('\n---------------------------------')
         print('Vector of probability = ', self.probability_vector)
@@ -132,17 +144,19 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 10000
+horizon = 100
 mab = Mab([0.1, 0.3, 0.2, 0.4, 0.45, 0.39, 0.6], horizon)
 
 i = 0
 while i < horizon:
     mab.pursuit(0.001, i)
     mab.play()
+    mab.conversion(i)
     i += 1
 
 time = mab.get_time()
 
+print(mab.conversion_array)
 
 plt.figure(1)
 plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')
