@@ -7,9 +7,12 @@ https://en.wikipedia.org/wiki/Multi-armed_bandit
 - [x] Epsilon_n-greedy
 - [x] UCB1
 - [x] Softmax
-- [ ] Pursuit
+- [x] Pursuit
 - [ ] Reinforcement Comparison
 - [ ] Thompson Sampling
 - [ ] Play the winner
 - [ ] One expert
 - [ ] Experts
+
+- [x] Regret calculation
+- [x] Conversion calculation
