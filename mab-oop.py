@@ -111,6 +111,10 @@ class Mab:
             index += 1
             probability_sum += self.pursuit_probability_array[index]
 
+    def thompson_sampling(self):
+        sampling_array = [random.betavariate(self.win_value[i] + 1, self.number_of_games[i] - self.win_value[i] + 1) for i in range(self.n)]
+        self.current_index = sampling_array.index(max(sampling_array))
+
     def get_regret(self):
         regret_vector = []
         for i in range(self.horizon):
@@ -143,17 +147,19 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 10000
-mab = Mab([0.1, 0.3, 0.2, 0.4, 0.45, 0.39, 0.6], horizon)
+horizon = 1000
+mab = Mab([0.1, 0.3, 0.9, 0.4, 0.45, 0.39, 0.6], horizon)
 
 i = 0
 while i < horizon:
-    mab.pursuit(0.001, i)
+    mab.thompson_sampling()
     mab.play()
     mab.conversion(i)
     i += 1
 
 time = mab.get_time()
+
+mab.print_data()
 
 plt.figure(1)
 plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')

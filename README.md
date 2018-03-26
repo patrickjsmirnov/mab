@@ -9,7 +9,7 @@ https://en.wikipedia.org/wiki/Multi-armed_bandit
 - [x] Softmax
 - [x] Pursuit
 - [ ] Reinforcement Comparison
-- [ ] Thompson Sampling
+- [x] Thompson Sampling
 - [ ] Play the winner
 - [ ] One expert
 - [ ] Experts
