@@ -13,7 +13,7 @@ class Mab:
         self.horizon = horizon
         self.n = len(self.probability_vector)
         self.win_value = [0 for i in range(self.n)]
-        self.win_value_in_time = [0 for i in range(horizon)]
+        self.win_value_in_time = []
         self.mean_win_value = [0 for i in range(self.n)]
         self.number_of_games = [1 for i in range(self.n)]
         self.average_number_of_games = [0 for i in range(self.n)]
@@ -129,7 +129,6 @@ class Mab:
         if t == 0:
             self.conversion_array = [0 for i in range(self.horizon)]
             return
-
         self.conversion_array[t] = self.conversion_array[t - 1] * t / (t + 1) + 1 / t * self.win_value_in_time[t]
 
 
@@ -144,7 +143,7 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 100
+horizon = 10000
 mab = Mab([0.1, 0.3, 0.2, 0.4, 0.45, 0.39, 0.6], horizon)
 
 i = 0
@@ -156,10 +155,16 @@ while i < horizon:
 
 time = mab.get_time()
 
-print(mab.conversion_array)
-
 plt.figure(1)
 plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')
+plt.title('Regret', fontsize=18)
+plt.xlabel('time', fontsize=16)
+plt.ylabel('regret', fontsize=16)
+plt.legend(loc='upper left', prop={'size': 11})
+plt.show()
+
+plt.figure(2)
+plt.plot(time, mab.conversion_array, linestyle='-', label='mean = xxx')
 plt.title('Regret', fontsize=18)
 plt.xlabel('time', fontsize=16)
 plt.ylabel('regret', fontsize=16)
