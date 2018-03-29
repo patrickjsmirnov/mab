@@ -115,6 +115,17 @@ class Mab:
         sampling_array = [random.betavariate(self.win_value[i] + 1, self.number_of_games[i] - self.win_value[i] + 1) for i in range(self.n)]
         self.current_index = sampling_array.index(max(sampling_array))
 
+    def play_the_winner(self, t):
+        if t == 1:
+            self.current_index = random.randint(0, self.n - 1)
+            return
+        
+        if self.win_value_in_time[t - 1] == 1:
+            self.current_index = self.current_index_vector[t - 1]
+            return
+
+        self.current_index = random.randint(0, self.n - 1)
+
     def get_regret(self):
         regret_vector = []
         for i in range(self.horizon):
@@ -135,7 +146,6 @@ class Mab:
             return
         self.conversion_array[t] = self.conversion_array[t - 1] * t / (t + 1) + 1 / t * self.win_value_in_time[t]
 
-
     def print_data(self):
         print('\n---------------------------------')
         print('Vector of probability = ', self.probability_vector)
@@ -147,14 +157,13 @@ class Mab:
         print('---------------------------------\n')
 
 
-horizon = 1000
+horizon = 10000
 mab = Mab([0.1, 0.3, 0.9, 0.4, 0.45, 0.39, 0.6], horizon)
 
-i = 0
+i = 2
 while i < horizon:
-    mab.thompson_sampling()
+    mab.play_the_winner(i)
     mab.play()
-    mab.conversion(i)
     i += 1
 
 time = mab.get_time()
@@ -169,10 +178,3 @@ plt.ylabel('regret', fontsize=16)
 plt.legend(loc='upper left', prop={'size': 11})
 plt.show()
 
-plt.figure(2)
-plt.plot(time, mab.conversion_array, linestyle='-', label='mean = xxx')
-plt.title('Regret', fontsize=18)
-plt.xlabel('time', fontsize=16)
-plt.ylabel('regret', fontsize=16)
-plt.legend(loc='upper left', prop={'size': 11})
-plt.show()
