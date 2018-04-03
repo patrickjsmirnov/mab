@@ -23,6 +23,18 @@ class Mab:
         self.pursuit_probability_array = []
         self.conversion_array = []
 
+    def clear(self):
+        self.win_value = [0 for i in range(self.n)]
+        self.win_value_in_time = []
+        self.mean_win_value = [0 for i in range(self.n)]
+        self.number_of_games = [1 for i in range(self.n)]
+        self.average_number_of_games = [0 for i in range(self.n)]
+        self.current_index = 0
+        self.total_number_of_games = self.n
+        self.current_index_vector = []
+        self.pursuit_probability_array = []
+        self.conversion_array = []
+
     def get_max_of_probability_vector(self):
         return max(self.probability_vector)
 
@@ -159,19 +171,36 @@ class Mab:
 
 horizon = 10000
 mab = Mab([0.1, 0.3, 0.9, 0.4, 0.45, 0.39, 0.6], horizon)
+starts = 30
+count_starts = 0
+global_regret_vector = [0 for i in range(horizon)]
 
-i = 2
-while i < horizon:
-    mab.play_the_winner(i)
-    mab.play()
-    i += 1
+while count_starts < starts:
+    mab.clear()
+    i = 1
+
+    while i < horizon:
+        mab.epsilon_n_greedy(i, 0.05)
+        mab.play()
+        i += 1
+
+    local_regret_vector = mab.get_regret()
+
+    for i in range(horizon):
+        global_regret_vector[i] += local_regret_vector[i]
+
+    count_starts += 1
+
+for i in range(horizon):
+    global_regret_vector[i] /= starts
+
+# global_regret_vector = [x / starts for x in global_regret_vector]
 
 time = mab.get_time()
 
-mab.print_data()
 
 plt.figure(1)
-plt.plot(time, mab.get_regret(), linestyle='-', label='mean = xxx')
+plt.plot(time, global_regret_vector, linestyle='-', label='mean = xxx')
 plt.title('Regret', fontsize=18)
 plt.xlabel('time', fontsize=16)
 plt.ylabel('regret', fontsize=16)

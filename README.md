@@ -16,3 +16,4 @@ https://en.wikipedia.org/wiki/Multi-armed_bandit
 
 - [x] Regret calculation
 - [x] Conversion calculation
+- [ ] Many starts
